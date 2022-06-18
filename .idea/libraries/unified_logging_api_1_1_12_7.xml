@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="unified-logging-api-1.1.12-7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/resources/unified-logging-api-1.1.12-7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
