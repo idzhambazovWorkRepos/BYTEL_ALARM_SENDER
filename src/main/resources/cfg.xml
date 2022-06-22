@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration elversion="6.1">
-    <name>VFTR_ALARM_SENDER</name>
+    <name>BYTEL_ALARM_SENDER</name>
     <version defect="${version.defect}" major="${version.major}" minor="${version.minor}" patch="${version.patch}"/>
-    <description>VFTR Alarm Sender JavaNode. v1.1.1 - fix for MED_EVENTS_FILTER lookup
+    <description>BYTEL Alarm Sender JavaNode.
     </description>
     <type>
         <collector>false</collector>
@@ -30,7 +30,7 @@
     </libraries>
     <parameters>
         <parameter name="ApplicationClass">
-            <value>com.comptel.vftralarmhandler.NodeApplication</value>
+            <value>com.comptel.bytelalarmhandler.NodeApplication</value>
             <description>Node application class</description>
             <check_regexp pattern=""/>
             <value_type>
@@ -49,36 +49,6 @@
             <description>Node classpath for JDBC jar file.</description>
             <value_type>
                 <any />
-            </value_type>
-            <attributes>
-                <mandatory>true</mandatory>
-                <installation_specific>false</installation_specific>
-                <environment>false</environment>
-                <hidden>false</hidden>
-            </attributes>
-        </parameter>
-	
-        <parameter name="CalmHost">
-            <value></value>
-            <description>Hostname for the Alam Management of Nokia Mediation</description>
-            <check_regexp pattern=""/>
-            <value_type>
-                <any />
-            </value_type>
-            <attributes>
-                <mandatory>true</mandatory>
-                <installation_specific>false</installation_specific>
-                <environment>false</environment>
-                <hidden>false</hidden>
-            </attributes>
-        </parameter>
-        
-        <parameter name="CalmRestApiPort">
-            <value>8182</value>
-            <description>Nokia Mediation Alarm Management Rest API port. Default is 8182</description>
-            <check_regexp pattern=""/>
-            <value_type>
-                <numeric />
             </value_type>
             <attributes>
                 <mandatory>true</mandatory>

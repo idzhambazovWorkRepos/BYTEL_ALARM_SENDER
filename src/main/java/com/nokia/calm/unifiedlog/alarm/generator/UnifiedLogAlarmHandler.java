@@ -93,7 +93,7 @@ public class UnifiedLogAlarmHandler {
         alarm.setSystem(this.system);
         alarm.setService(this.service);
         alarm.setAlarmId(am.getAlarmId());
-        alarm.setProcess("ErrorCode:" + event.getKey() + "-EventId:" + event.getEventid());
+        alarm.setProcess(event.getNodeid() + "-" + event.getKey() + "-EventId:" + event.getEventid());
         alarm.setAlarmData(event.getKey());
         alarm.setExtension("transient_alarms", Boolean.valueOf(true));
         this.unifiedLogger.error((AbstractMessage) alarm);

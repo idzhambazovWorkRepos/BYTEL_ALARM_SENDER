@@ -1,10 +1,10 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.comptel.vftralarmhandler</groupId>
-    <artifactId>VFTR_ALARM_SENDER</artifactId>
-    <version>1.0.0-BUILD10</version>
-    <name>VFTR_ALARM_SENDER Node</name>
+    <groupId>com.comptel.bytelalarmhandler</groupId>
+    <artifactId>BYTEL_ALARM_SENDER</artifactId>
+    <version>1.0.0-PRE6</version>
+    <name>BYTEL_ALARM_SENDER Node</name>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -137,7 +137,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.comptel.vftralarmhandler.NodeApplication</mainClass>
+                                    <mainClass>com.comptel.bytelalarmhandler.NodeApplication</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -178,7 +178,7 @@
                 </executions>
                 <configuration>
                     <autoversion>true</autoversion>
-                    <packageName>VFTR_ALARM_SENDER.el</packageName>
+                    <packageName>BYTEL_ALARM_SENDER.el</packageName>
                 </configuration>
                 <dependencies>
                     <dependency>
