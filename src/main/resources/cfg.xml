@@ -43,21 +43,7 @@
                 <hidden>true</hidden>
             </attributes>
         </parameter>
-        
-        <parameter name="CLASSPATH">
-            <value>${ORACLE_HOME}/jdbc/lib/ojdbc6.jar</value>
-            <description>Node classpath for JDBC jar file.</description>
-            <value_type>
-                <any />
-            </value_type>
-            <attributes>
-                <mandatory>true</mandatory>
-                <installation_specific>false</installation_specific>
-                <environment>false</environment>
-                <hidden>false</hidden>
-            </attributes>
-        </parameter>
-        
+
         <parameter name="ELJDBC.Driver">
             <value>oracle.jdbc.driver.OracleDriver</value>
             <description></description>
