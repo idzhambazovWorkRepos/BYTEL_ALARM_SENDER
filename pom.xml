@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.comptel.bytelalarmhandler</groupId>
     <artifactId>BYTEL_ALARM_SENDER</artifactId>
-    <version>1.0.0-PRE8</version>
+    <version>1.0.0-PRE10</version>
     <name>BYTEL_ALARM_SENDER Node</name>
     <dependencies>
         <dependency>

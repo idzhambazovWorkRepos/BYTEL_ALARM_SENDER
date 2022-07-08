@@ -8,11 +8,11 @@
         <collector>false</collector>
         <intermediate>false</intermediate>
         <decoder>false</decoder>
-        <businesslogic>false</businesslogic>
+        <businesslogic>true</businesslogic>
         <blt>false</blt>
         <encoder>false</encoder>
         <distributor>false</distributor>
-        <standalone>true</standalone>
+        <standalone>false</standalone>
         <interface>false</interface>
     </type>
     <!-- application/ -->
