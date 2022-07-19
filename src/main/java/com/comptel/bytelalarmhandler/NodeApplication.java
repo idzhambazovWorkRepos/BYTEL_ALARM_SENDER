@@ -112,7 +112,6 @@ public class NodeApplication implements BusinessLogic, Schedulable {
             logger.info("No new alarm in EL db");
         } else {
             for (ELEvent event : alarmEventsList) {
-                logger.info("Alarm: ");
                 message = event.getMessage();
                 lastProcessedEventid = event.getEventid();
 
@@ -120,13 +119,8 @@ public class NodeApplication implements BusinessLogic, Schedulable {
                 if (message.length() > 500) {
                     message = message.substring(0, 500);
                 }
-                logger.info("Additionalid: " + event.getEventid() + "# Alarmid(Key): " + event.getKey() + "# " +
-                        "Clientid: " + event.getClientId() +
-                        "# ComponenetName: " + event.getComponentName() + "# " +
-                        "ModuleName: " + event.getModuleName() +
-                        "# Message: " + message + "# " +
-                        "Severity: " + event.getSeverity() +
-                        "EventId: " + event.getEventid());
+                logger.info("#Id: " + event.getEventid() + " #Key: " + event.getKey() + " #Message: " + message +  " #EventId: " + event.getEventid());
+
                 logger.finest("Sending Alarm ...");
                 try {
 

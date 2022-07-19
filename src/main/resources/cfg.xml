@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration elversion="6.1">
-    <name>BYTEL_ALARM_SENDER</name>
+    <name>BOUYGUES_ALARM_SENDER</name>
     <version defect="${version.defect}" major="${version.major}" minor="${version.minor}" patch="${version.patch}"/>
-    <description>BYTEL Alarm Sender JavaNode.
+    <description>Bouygues Alarm Sender JavaNode.
     </description>
     <type>
         <collector>false</collector>

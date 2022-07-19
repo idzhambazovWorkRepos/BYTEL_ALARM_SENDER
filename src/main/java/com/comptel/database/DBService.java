@@ -76,7 +76,7 @@ public class DBService {
                     //event.setNodeName(selectNodeNameFromEL_NODES(event.getNodeid()));
                     eventsList.add(event);
                     offset--;
-                    LOGGER.info("CURRENT LIST SIZE:" + eventsList.size());
+                    LOGGER.info("current size of the events list:" + eventsList.size());
                 }
 
         } catch (SQLException e) {
