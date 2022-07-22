@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.comptel.bytelalarmhandler</groupId>
-    <artifactId>BOUYGUES_ALARM_SENDER</artifactId>
+    <artifactId>BY_CFG_ALARM_SENDER</artifactId>
     <version>1.0.0-PRE1</version>
-    <name>BOUYGUES_ALARM_SENDER Node</name>
+    <name>BY_CFG_ALARM_SENDER</name>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -178,7 +178,7 @@
                 </executions>
                 <configuration>
                     <autoversion>true</autoversion>
-                    <packageName>BOUYGUES_ALARM_SENDER.el</packageName>
+                    <packageName>BY_CFG_ALARM_SENDER.el</packageName>
                 </configuration>
                 <dependencies>
                     <dependency>

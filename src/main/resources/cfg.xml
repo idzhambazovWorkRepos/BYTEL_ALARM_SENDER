@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration elversion="6.1">
-    <name>BOUYGUES_ALARM_SENDER</name>
+    <name>BY_CFG_ALARM_SENDER</name>
     <version defect="${version.defect}" major="${version.major}" minor="${version.minor}" patch="${version.patch}"/>
     <description>Bouygues Alarm Sender JavaNode.
     </description>
