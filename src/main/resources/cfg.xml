@@ -175,25 +175,7 @@
                 <perl5lib>false</perl5lib>
             </export>
         </file>
-
-        
-<!--        <file editable="false" name="C:/Users/cpt2vot/.m2/repository/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar" os="AnyOS" path="./">
-            <export>
-                <libpath>false</libpath>
-                <perl5lib>false</perl5lib>
-            </export>
-        </file>
-        
-        <file editable="false" name="C:/Users/cpt2vot/.m2/repository/com/comptel/event/installer/ng/eventmanagement-engine-solution/2013.3/eventmanagement-engine-solution-2013.3.jar" os="AnyOS" path="./">
-            <export>
-                <libpath>false</libpath>
-                <perl5lib>false</perl5lib>
-            </export>
-        </file>-->
     </files>
     <storages/>
-    <!--    <links>
-      <link>OUT</link>
-    </links>-->
     <auditkeys/>
 </configuration>
