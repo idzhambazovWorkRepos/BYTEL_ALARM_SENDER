@@ -105,21 +105,6 @@
             </attributes>
         </parameter>
         
-        <parameter name="sleepPerAlarmInMs">
-            <value>10</value>
-            <description>Sleep duration in ms between sending alarms to EventManager</description>
-            <check_regexp pattern=""/>
-            <value_type>
-                <any />
-            </value_type>
-            <attributes>
-                <mandatory>true</mandatory>
-                <installation_specific>false</installation_specific>
-                <environment>false</environment>
-                <hidden>false</hidden>
-            </attributes>
-        </parameter>
-        
         <parameter name="HostServer">
             <value>eventlink</value>
             <description>Host that the node is running on.</description>

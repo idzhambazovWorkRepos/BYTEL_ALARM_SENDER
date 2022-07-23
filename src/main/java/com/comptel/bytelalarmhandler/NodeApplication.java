@@ -31,14 +31,12 @@ public class NodeApplication implements BusinessLogic, Schedulable {
 
     private long lastProcessedEventid = 0;
     private final int OFFSET = 1000;
-    private long sleepPerAlarmInMs = 0;
     //private Properties propertiesForEM;
     private AtomicBoolean isStillSendingAlarms = new AtomicBoolean(false);
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private String hostServer;
     private String message;
 
-    private String ackuser = "alarmFiltered";
 
     /*
      * Calm changes
@@ -52,8 +50,6 @@ public class NodeApplication implements BusinessLogic, Schedulable {
         hostServer = nodeContext.getParameter("HostServer");
         handler = new UnifiedLogAlarmHandler(hostServer);
         handler.initialise("/opt/comptel/eventlink/config/unifiedlogmapping.conf", true, true, true, true);
-
-        sleepPerAlarmInMs = Long.parseLong(nodeContext.getParameter("sleepPerAlarmInMs"));
 
         lastProcessedEventid = getLastProcessedEventId(hostServer);
 
@@ -73,21 +69,18 @@ public class NodeApplication implements BusinessLogic, Schedulable {
     public void schedule() throws Exception {
         if (isStillSendingAlarms.compareAndSet(false, true)) {
             logger.info("Schedule starts sending alarms");
-            Callable<Object> callable = new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    try {
-                        organizeFetchAndSendAlarms();
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE, "An exception caught in schedule(). Node will continue where it left off within next schedule time. The exception message is:\n" + e.getMessage(), e);
-                        throw e;
-                    } finally {
-                        isStillSendingAlarms.set(false);
-                    }
-
-                    logger.info("Schedule finished sending alarms");
-                    return "this return is not used by any method";
+            Callable<Object> callable = () -> {
+                try {
+                    organizeFetchAndSendAlarms();
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "An exception caught in schedule(). Node will continue where it left off within next schedule time. The exception message is:\n" + e.getMessage(), e);
+                    throw e;
+                } finally {
+                    isStillSendingAlarms.set(false);
                 }
+
+                logger.info("Schedule finished sending alarms");
+                return "this return is not used by any method";
             };
             executorService.submit(callable);
         } else {
@@ -95,7 +88,7 @@ public class NodeApplication implements BusinessLogic, Schedulable {
         }
     }
 
-    private void organizeFetchAndSendAlarms() throws SQLException, EventException, NumberFormatException, UnknownHostException, InterruptedException, ConfigurationException {
+    private void organizeFetchAndSendAlarms() throws SQLException, NumberFormatException{
 
         List<ELEvent> alarmEventsList = fetchAndSendAlarms();
         while (!alarmEventsList.isEmpty()) {
@@ -105,7 +98,7 @@ public class NodeApplication implements BusinessLogic, Schedulable {
         logger.finest("organizeFetchAndSendAlarms(): End");
     }
 
-    private List<ELEvent> fetchAndSendAlarms() throws EventException, NumberFormatException, SQLException, InterruptedException, ConfigurationException {
+    private List<ELEvent> fetchAndSendAlarms() throws NumberFormatException, SQLException {
         logger.info("fetchAndSendAlarms() enter");
         List<ELEvent> alarmEventsList = dbServiceEL.selectAllFromEL(lastProcessedEventid, OFFSET);
         if (alarmEventsList.isEmpty()) {
@@ -131,6 +124,7 @@ public class NodeApplication implements BusinessLogic, Schedulable {
                 }
                 logger.finest("Sent Alarm ...");
                 lastProcessedEventid = event.getEventid();
+                storeLastProcessedEventId(hostServer, lastProcessedEventid);
                 logger.finest("Last processed EventId = " + lastProcessedEventid);
             }
         }
@@ -148,6 +142,21 @@ public class NodeApplication implements BusinessLogic, Schedulable {
         }
         logger.info("getLastProcessedEventId(): Last stored (processed) EventID = '" + eventId + "'");
         return Long.parseLong(eventId);
+    }
+
+    public void storeLastProcessedEventId(String host, long eventId) {
+        logger.info("storeLastProcessedEventId(): start");
+        String key = "EID_KEY_" + host;
+        logger.info("storeLastProcessedEventId(): searhching for key '" + key + "' in storage file");
+        if (Nodebase.nb_store_get(key).isEmpty()) {
+            Nodebase.nb_store_add(key, Long.toString(eventId));
+            logger.info("storeLastProcessedEventId(): eventId '" + eventId + "' is added for key '" + key + "'");
+        } else {
+            Nodebase.nb_store_set(key, Long.toString(eventId));
+            logger.info("storeLastProcessedEventId(): eventId '" + eventId + "' is updated for key '" + key + "'");
+        }
+
+        logger.info("storeLastProcessedEventId(): end");
     }
 
     @Override
