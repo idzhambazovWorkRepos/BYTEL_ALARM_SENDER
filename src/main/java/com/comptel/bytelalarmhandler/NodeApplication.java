@@ -29,7 +29,7 @@ public class NodeApplication implements BusinessLogic, Schedulable {
     private static final Logger logger = Logger.getLogger(NodeApplication.class.getCanonicalName());
     private DBService dbServiceEL;
 
-    private long lastProcessedEventid = 0;
+    private long lastProcessedEvent;
     private final int OFFSET = 1000;
     //private Properties propertiesForEM;
     private AtomicBoolean isStillSendingAlarms = new AtomicBoolean(false);
@@ -51,7 +51,7 @@ public class NodeApplication implements BusinessLogic, Schedulable {
         handler = new UnifiedLogAlarmHandler(hostServer);
         handler.initialise("/opt/comptel/eventlink/config/unifiedlogmapping.conf", true, true, true, true);
 
-        lastProcessedEventid = getLastProcessedEventId(hostServer);
+        lastProcessedEvent = getLastProcessedEventId(hostServer);
 
     }
 
@@ -71,7 +71,7 @@ public class NodeApplication implements BusinessLogic, Schedulable {
             logger.info("Schedule starts sending alarms");
             Callable<Object> callable = () -> {
                 try {
-                    organizeFetchAndSendAlarms();
+                    fetchAndSendAlarms();
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "An exception caught in schedule(). Node will continue where it left off within next schedule time. The exception message is:\n" + e.getMessage(), e);
                     throw e;
@@ -88,26 +88,19 @@ public class NodeApplication implements BusinessLogic, Schedulable {
         }
     }
 
-    private void organizeFetchAndSendAlarms() throws SQLException, NumberFormatException{
 
-        List<ELEvent> alarmEventsList = fetchAndSendAlarms();
-        while (!alarmEventsList.isEmpty()) {
-            logger.info(alarmEventsList.size() + " alarms sent to EM");
-            alarmEventsList = fetchAndSendAlarms();
-        }
-        logger.finest("organizeFetchAndSendAlarms(): End");
-    }
-
-    private List<ELEvent> fetchAndSendAlarms() throws NumberFormatException, SQLException {
+    private void fetchAndSendAlarms() throws NumberFormatException, SQLException {
         logger.info("fetchAndSendAlarms() enter");
-        List<ELEvent> alarmEventsList = dbServiceEL.selectAllFromEL(lastProcessedEventid, OFFSET);
+        long oldTime = getLastProcessedEventId(hostServer);
+
+        lastProcessedEvent = dbServiceEL.selectLastEvent(oldTime);
+        List<ELEvent> alarmEventsList = dbServiceEL.selectAllFromEL(oldTime, lastProcessedEvent, OFFSET);
         if (alarmEventsList.isEmpty()) {
             logger.info("No new alarm in EL db");
         } else {
             for (ELEvent event : alarmEventsList) {
                 message = event.getMessage();
-                lastProcessedEventid = event.getEventid();
-
+                //lastProcessedEvent = event.getEventid();
                 // Limit message to first 500 bytes to prevent dbDownTime issue
                 if (message.length() > 500) {
                     message = message.substring(0, 500);
@@ -116,32 +109,32 @@ public class NodeApplication implements BusinessLogic, Schedulable {
 
                 logger.finest("Sending Alarm ...");
                 try {
-
                     handler.sendAlarm(event);
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "", e);
                     throw new RuntimeException(e);
                 }
                 logger.finest("Sent Alarm ...");
-                lastProcessedEventid = event.getEventid();
-                storeLastProcessedEventId(hostServer, lastProcessedEventid);
-                logger.finest("Last processed EventId = " + lastProcessedEventid);
             }
+                lastProcessedEvent = dbServiceEL.selectLastEvent(oldTime);
+                storeLastProcessedEventId(hostServer, lastProcessedEvent);
+                logger.info("Last processed EventId = " + lastProcessedEvent);
+                logger.finest("All alarms are finished. Waiting for next schedule...");
         }
-        logger.finest("All alarms are finished. Waiting for next schedule...");
-        return alarmEventsList;
+
     }
 
 
     public long getLastProcessedEventId(String host) {
         logger.info("getLastProcessedEventId(): start");
         String key = "EID_KEY_" + host;
-        String eventId = Nodebase.nb_store_get(key);
-        if (eventId.isEmpty()) {
+        String time = Nodebase.nb_store_get(key);
+        if (time.isEmpty()) {
+            logger.info("getLastProcessedEventId(): No stored (processed). Storing..");
             return 0L;
         }
-        logger.info("getLastProcessedEventId(): Last stored (processed) EventID = '" + eventId + "'");
-        return Long.parseLong(eventId);
+        logger.info("getLastProcessedEventId(): Last stored (processed) Event at = '" + time + "'");
+        return Long.parseLong(time);
     }
 
     public void storeLastProcessedEventId(String host, long eventId) {
