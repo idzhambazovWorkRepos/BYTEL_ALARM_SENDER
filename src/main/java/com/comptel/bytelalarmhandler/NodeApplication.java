@@ -3,9 +3,7 @@ package com.comptel.bytelalarmhandler;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +21,8 @@ import com.comptel.mc.node.EventRecordService;
 import com.comptel.mc.node.NodeContext;
 import com.comptel.mc.node.Schedulable;
 import com.nokia.calm.unifiedlog.alarm.generator.UnifiedLogAlarmHandler;
+
+import static com.comptel.eventlink.core.Nodebase.nb_abort;
 
 public class NodeApplication implements BusinessLogic, Schedulable {
 
@@ -78,11 +78,25 @@ public class NodeApplication implements BusinessLogic, Schedulable {
                 } finally {
                     isStillSendingAlarms.set(false);
                 }
-
                 logger.info("Schedule finished sending alarms");
                 return "this return is not used by any method";
             };
-            executorService.submit(callable);
+            final Future future = executorService.submit(callable);
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                logger.severe("InterruptedException: " + e.getCause());
+                nb_abort();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                logger.severe("ExecutionException: " + e.getMessage());
+                nb_abort();
+            }catch (CancellationException e){
+                e.printStackTrace();
+                logger.severe("CancellationException: " + e.getMessage());
+                nb_abort();
+            }
         } else {
             logger.info("Schedule skipped as node is still busy sending alarms");
         }

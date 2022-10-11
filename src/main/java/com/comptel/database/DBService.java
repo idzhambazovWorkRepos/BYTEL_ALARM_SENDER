@@ -23,11 +23,19 @@ public class DBService {
 
 
     //Aggregation
-   // private static final String SELECT_ALL_FROM_EL = "SELECT MAX(EVENTID) AS EVENTID,KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID,HOST"
-   //+ " FROM el_events where extract(epoch from eventtimesystem) > ? AND extract(epoch from eventtimesystem) <= ? " +
-  // "GROUP BY KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID,HOST ";
 
-     private static final String SELECT_ALL_FROM_EL = "SELECT EVENTID AS EVENTID,KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID,HOST"
+//    private static final String SELECT_ALL_FROM_EL = " SELECT DISTINCT ON (key) EVENTID,KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID " +
+//            "FROM el_events WHERE EXTRACT(epoch from eventtimesystem) > ? AND EXTRACT(epoch from eventtimesystem) <= ? " +
+//            "ORDER BY key, eventtimesystem DESC";
+
+
+    // Only one with max EVENTID
+//    private static final String SELECT_ALL_FROM_EL = "SELECT MAX(EVENTID) AS EVENTID,KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID,HOST"
+//   + " FROM el_events where extract(epoch from eventtimesystem) > ? AND extract(epoch from eventtimesystem) <= ? " +
+//   "GROUP BY KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID,HOST ";
+
+
+     private static final String SELECT_ALL_FROM_EL = "SELECT EVENTID,KEY,MESSAGE,EVENTTYPE,STREAMID,NODEID,HOST"
              + " FROM el_events where extract(epoch from eventtimesystem) > ? AND extract(epoch from eventtimesystem) <= ? ";
 
 
@@ -37,8 +45,6 @@ public class DBService {
             "FROM (SELECT DISTINCT eventtimesystem FROM el_events WHERE extract(epoch from eventtimesystem) > ?) AS res) AS foo " +
             "WHERE ROW_NUM='2')) AS time_in_sec) as RESULT";
 
-    private static final String UPDATE_ACKUSER_ON_EL = 
-            "UPDATE el_events SET ACKUSER=? WHERE eventid=?";
 
     public DBService(DBConnectionParams dbConnectionParams) {
         Locale.setDefault(Locale.ENGLISH);
@@ -51,13 +57,13 @@ public class DBService {
 
     /**
      * 
-     * @param oldTime
-     * @param newTime
+     * @param oldEvent
+     * @param newEvent
      * @param offset
      * @return
      * @throws SQLException 
      */
-    public List<ELEvent> selectAllFromEL(long oldTime, long newTime, int offset) throws SQLException {
+    public List<ELEvent> selectAllFromEL(long oldEvent, long newEvent, int offset) throws SQLException {
         LOGGER.info(String.format("%s", SELECT_ALL_FROM_EL));
         long startTime = System.nanoTime();
         List<ELEvent> eventsList = new ArrayList<>();
@@ -67,8 +73,8 @@ public class DBService {
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(SELECT_ALL_FROM_EL);
-            statement.setLong(1, oldTime);
-            statement.setLong(2, newTime);
+            statement.setLong(1, oldEvent);
+            statement.setLong(2, newEvent);
             rs = statement.executeQuery();
                 while (rs.next() && offset > 0) {
                     ELEvent event = new ELEvent();
@@ -78,9 +84,7 @@ public class DBService {
                     event.setMessage(truncateAndAppend3dots(rs.getString("MESSAGE")));
                     event.setEventtype(rs.getString("EVENTTYPE"));
                     event.setStreamid(rs.getLong("STREAMID"));
-                    //event.setStreamName(selectStreamNameFromEL_STREAMS(event.getStreamid()));
                     event.setNodeid(rs.getLong("NODEID"));
-                    //event.setNodeName(selectNodeNameFromEL_NODES(event.getNodeid()));
                     eventsList.add(event);
                     offset--;
                     LOGGER.info("current size of the events list:" + eventsList.size());
@@ -103,8 +107,8 @@ public class DBService {
     }
 
 
-    public long selectLastEvent( long oldTime) throws SQLException {
-        LOGGER.info(String.format("%s", SELECT_LAST_EVENT));
+    public long selectLastEvent( long oldEvent) throws SQLException {
+        LOGGER.fine(String.format("%s", SELECT_LAST_EVENT));
         ResultSet rs = null;
         Connection connection = null;
         PreparedStatement statement = null;
@@ -112,12 +116,12 @@ public class DBService {
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(SELECT_LAST_EVENT);
-            statement.setLong(1, oldTime);
+            statement.setLong(1, oldEvent);
 
             rs = statement.executeQuery();
             while (rs.next()) {
                 time =  rs.getLong("epoch_time");
-                LOGGER.info("LastEventTime: " + time);
+                LOGGER.info("LastEvent: " + time);
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error occurred for '" + SELECT_LAST_EVENT +"' query", e);
