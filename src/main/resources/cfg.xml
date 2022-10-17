@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration elversion="6.1">
-    <name>BYTEL_ALARM_SENDER</name>
+    <name>BY_CFG_ALARM_SENDER</name>
     <version defect="${version.defect}" major="${version.major}" minor="${version.minor}" patch="${version.patch}"/>
-    <description>BYTEL Alarm Sender JavaNode.
+    <description>Bouygues Alarm Sender JavaNode.
     </description>
     <type>
         <collector>false</collector>
         <intermediate>false</intermediate>
         <decoder>false</decoder>
-        <businesslogic>false</businesslogic>
+        <businesslogic>true</businesslogic>
         <blt>false</blt>
         <encoder>false</encoder>
         <distributor>false</distributor>
-        <standalone>true</standalone>
+        <standalone>false</standalone>
         <interface>false</interface>
     </type>
     <!-- application/ -->
@@ -105,21 +105,6 @@
             </attributes>
         </parameter>
         
-        <parameter name="sleepPerAlarmInMs">
-            <value>10</value>
-            <description>Sleep duration in ms between sending alarms to EventManager</description>
-            <check_regexp pattern=""/>
-            <value_type>
-                <any />
-            </value_type>
-            <attributes>
-                <mandatory>true</mandatory>
-                <installation_specific>false</installation_specific>
-                <environment>false</environment>
-                <hidden>false</hidden>
-            </attributes>
-        </parameter>
-        
         <parameter name="HostServer">
             <value>eventlink</value>
             <description>Host that the node is running on.</description>
@@ -175,25 +160,7 @@
                 <perl5lib>false</perl5lib>
             </export>
         </file>
-
-        
-<!--        <file editable="false" name="C:/Users/cpt2vot/.m2/repository/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar" os="AnyOS" path="./">
-            <export>
-                <libpath>false</libpath>
-                <perl5lib>false</perl5lib>
-            </export>
-        </file>
-        
-        <file editable="false" name="C:/Users/cpt2vot/.m2/repository/com/comptel/event/installer/ng/eventmanagement-engine-solution/2013.3/eventmanagement-engine-solution-2013.3.jar" os="AnyOS" path="./">
-            <export>
-                <libpath>false</libpath>
-                <perl5lib>false</perl5lib>
-            </export>
-        </file>-->
     </files>
     <storages/>
-    <!--    <links>
-      <link>OUT</link>
-    </links>-->
     <auditkeys/>
 </configuration>

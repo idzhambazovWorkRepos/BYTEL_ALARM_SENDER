@@ -93,13 +93,13 @@ public class UnifiedLogAlarmHandler {
         alarm.setSystem(this.system);
         alarm.setService(this.service);
         alarm.setAlarmId(am.getAlarmId());
-        alarm.setProcess(event.getNodeid() + "-" + event.getKey() + "-EventId:" + event.getEventid());
+        alarm.setProcess(event.getStreamid() + "-" +  event.getNodeid() + "-" + event.getKey() + "-EventId:" + event.getEventid());
         alarm.setAlarmData(event.getKey());
         alarm.setExtension("transient_alarms", Boolean.valueOf(true));
         this.unifiedLogger.error((AbstractMessage) alarm);
         LOGGER.info("sendAlarm(): Alarm sent for errorcode = " + event.getKey());
         LOGGER.info("sendAlarm(): Host: " + this.host + " System: " + this.system + " Service: " + this.service);
-        LOGGER.info("sendAlarm(): StreamName:" + event.getStreamName() + "-NodeName:" + event.getNodeName() + "-ErrorCode:" + event.getKey() + "-EventId:" + event.getEventid());
+        LOGGER.info("sendAlarm(): StreamId:" + event.getStreamid() + "-NodeId:" + event.getNodeid() + "-ErrorCode:" + event.getKey() + "-EventId:" + event.getEventid());
         LOGGER.info("sendAlarm():...end");
     }
 
